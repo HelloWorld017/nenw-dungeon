@@ -1,4 +1,4 @@
-from entity.entity import Entity
+from entity.entity_living import EntityLiving
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 import geometry.math as gmath
@@ -8,11 +8,14 @@ import pygame.locals as pg_vars
 import math
 
 
-class Player(Entity):
-    friction = 0.3
+class Player(EntityLiving):
+    friction = 0.7
     air_jump = False
     jump_start = 0
     jump_count = 0
+    health = 5
+    max_health = 5
+    max_hurt_animate_tick = 30
 
     def __init__(self, game):
         super().__init__(game, BoundBox(
@@ -20,9 +23,22 @@ class Player(Entity):
             Vector2(game.width / 2 + 25, game.height)
         ))
 
+        self.hurt_animate_tick = 0
+
+    def spawn(self):
+        super().spawn()
+        self.game.players.append(self)
+
+    def set_dead(self):
+        super().set_dead()
+        self.game.players.remove(self)
+
     def render(self, renderer):
         super().render(renderer)
-        renderer.rect(self, (220, 200, 80))
+        hurt_amount = 1 - (abs(self.hurt_animate_tick - self.max_hurt_animate_tick / 2)
+                           / (self.max_hurt_animate_tick / 2))
+
+        renderer.rect(self, (220, 200 - hurt_amount * 100, 80))
 
     def do_jump(self):
         if self.air_jump and self.is_ground:
@@ -37,6 +53,12 @@ class Player(Entity):
     @property
     def is_ground(self):
         return self.max.y >= self.game.height
+
+    def hurt(self, hurt_amount):
+        super().hurt(hurt_amount)
+
+        self.motion.y += -50
+        self.hurt_animate_tick = self.max_hurt_animate_tick
 
     def update(self, events):
         super().update(events)
@@ -77,3 +99,6 @@ class Player(Entity):
 
         if self.y is self.game.height:
             self.motion.y = 0
+
+        if self.hurt_animate_tick > 0:
+            self.hurt_animate_tick -= 1

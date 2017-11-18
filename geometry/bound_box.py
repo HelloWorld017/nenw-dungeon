@@ -54,3 +54,8 @@ class BoundBox(Vector2):
     @property
     def rect(self):
         return self.min.x, self.min.y, self.width, self.height
+
+    @property
+    def polygon(self):
+        return ((self.min.x, self.min.y), (self.min.x, self.max.y),
+                (self.max.x, self.max.y), (self.max.x, self.min.y))

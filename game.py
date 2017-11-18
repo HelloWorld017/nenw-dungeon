@@ -1,18 +1,26 @@
 import sys
+
 import pygame
 import pygame.locals as pg_vars
-from render.render import Render
+
 from keyboard.keys import Keys
+from render.render import Render
 
 
 class Game(object):
     entities = {}
+    players = []
+    death_note = []
     last_entity_id = 0
     key_maps = dict.fromkeys(Keys.list_keys(), False)
     width = 1280
     height = 720
+    patterns = []
+    pre_ui = []
+    ui = []
 
     def __init__(self):
+        self.tick = 0
         pygame.init()
 
         screen = pygame.display.set_mode(
@@ -38,19 +46,36 @@ class Game(object):
                 self.key_maps[event.key] = False
 
     def update(self, events):
+        self.tick += 1
+
         for event in events:
             self.handle_event(event)
 
         for e in self.entities.values():
             e.update(events)
 
+        for pattern in self.patterns:
+            pattern.update()
+
+        for death in self.death_note:
+            self.entities.pop(death)
+
+        self.death_note = []
+
     def render(self):
         self.render_background()
 
+        for element in self.pre_ui:
+            element.render(self.renderer)
+
         for e in self.entities.values():
             e.render(self.renderer)
+
+        for element in self.ui:
+            element.render(self.renderer)
 
         self.renderer.update()
 
     def render_background(self):
         self.renderer.fill((240, 240, 240))
+
