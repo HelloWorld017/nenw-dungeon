@@ -8,6 +8,7 @@ class Pattern(object):
         self.game = game
         self.entity = entity
         self.tick = 0
+        self.inner_tick = 0
 
     @property
     def duration(self):
@@ -23,13 +24,14 @@ class Pattern(object):
         pass
 
     def update(self):
-        self.tick += 1
+        self.inner_tick += 1
 
-        if self.tick == self.pre_activate_tick:
+        if self.inner_tick == self.pre_activate_tick:
             self.on_activate()
 
-        if self.tick >= self.pre_activate_tick:
+        if self.inner_tick >= self.pre_activate_tick:
             self.do_update()
+            self.tick += 1
 
         if self.tick >= self.duration:
             self.deactivate()

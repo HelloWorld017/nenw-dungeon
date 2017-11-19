@@ -1,4 +1,5 @@
 from decorators.chain import chain
+import math
 
 
 class Vector2(object):
@@ -28,6 +29,9 @@ class Vector2(object):
     @chain
     def set_y(self, y):
         self.y = y
+
+    def distance(self, target):
+        return math.sqrt((self.x - target.x) ** 2 + (self.y - target.y) ** 2)
 
     def clone(self):
         return Vector2(self.x, self.y)

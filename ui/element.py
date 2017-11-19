@@ -10,6 +10,9 @@ class Element(object):
         self.y = y
 
     def render(self, renderer):
+        self.do_render(renderer)
+
+    def do_render(self, renderer):
         pass
 
     @chain

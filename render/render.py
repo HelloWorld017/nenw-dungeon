@@ -20,7 +20,7 @@ class Render(object):
         self.screen.blit(text_surface, text_rect)
 
     @chain
-    def draw_image(self, image, x, y, degree):
+    def draw_image(self, image, x, y, degree=0):
         rotated = pygame.transform.rotate(image, degree)
         rect = rotated.get_rect()
         rect.center = (x, y)

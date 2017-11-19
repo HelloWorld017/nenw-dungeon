@@ -12,6 +12,9 @@ class PatternThorn(Pattern):
     thorn_width = 0
     thorn_height = 0
     ui_list = []
+    ui_list_phase_2 = []
+
+    phase_1_trap_list = []
 
     def on_pre_activate(self):
         super().on_pre_activate()
@@ -21,37 +24,76 @@ class PatternThorn(Pattern):
         self.thorn_height = EntityThorn.height
 
         self.ui_list = []
+        self.ui_list_phase_2 = []
+
+        self.phase_1_trap_list = []
 
         for i in range(5):
             self.ui_list.append(WarningSquare(self.game, BoundBox(
                 Vector2((i * 2) * self.thorn_width, 0),
-                Vector2((i * 2 + 1) * self.thorn_width, self.thorn_height)
+                Vector2((i * 2 + 1) * self.thorn_width, self.game.height)
+            )).show())
+
+    def on_activate(self):
+        for elem in self.ui_list:
+            elem.hide()
+
+        for i in range(5):
+            self.ui_list_phase_2.append(WarningSquare(self.game, BoundBox(
+                Vector2((i * 2 + 1) * self.thorn_width, 0),
+                Vector2((i * 2 + 2) * self.thorn_width, self.game.height)
             )).show())
 
     def do_update(self):
-        super().update()
-        if self.tick >= self.last_fire + self.fire_duration:
-            self.last_fire = self.last_fire + self.fire_duration
+        super().do_update()
+        if self.fire_amount <= 10:
+            if self.tick >= self.last_fire + self.fire_duration:
+                self.last_fire = self.last_fire + self.fire_duration
 
-            inverse = self.fire_amount >= 5
+                inverse = self.fire_amount >= 5
 
-            if not inverse:
-                thorn_x = (self.fire_amount * 2 + 1 / 2) * self.thorn_width
-                thorn_y = -self.thorn_height / 2
+                if self.fire_amount == 5:
+                    for elem in self.ui_list_phase_2:
+                        elem.hide()
 
-            else:
-                thorn_x = ((self.fire_amount - 5) * 2 + 3 / 2) * self.thorn_width
-                thorn_y = self.game.height + self.thorn_height / 2
+                    for elem in self.ui_list:
+                        elem.show()
 
-            thorn = EntityThorn(self.game, thorn_x, thorn_y, 20, inverse)
-            thorn.spawn()
+                auto_decay = True
+
+                if not inverse:
+                    thorn_x = (self.fire_amount * 2 + 1 / 2) * self.thorn_width
+                    thorn_y = -self.thorn_height / 2
+                    auto_decay = False
+
+                else:
+                    thorn_x = ((self.fire_amount - 5) * 2 + 3 / 2) * self.thorn_width
+                    thorn_y = self.game.height + self.thorn_height / 2
+
+                thorn = EntityThorn(self.game, thorn_x, thorn_y, 20, inverse)
+                thorn.spawn()
+                thorn.auto_decay = auto_decay
+
+                if not inverse:
+                    self.phase_1_trap_list.append(thorn)
+
+                self.fire_amount += 1
+
+        elif self.fire_amount == 11:
+            for trap in self.phase_1_trap_list:
+                trap.motion.y = -trap.motion.y
 
             self.fire_amount += 1
 
+    def on_deactivate(self):
+        super().on_deactivate()
+        for elem in self.ui_list:
+            elem.hide()
+
     @property
     def duration(self):
-        return self.game.height / self.speed * 2 + 1
+        return self.game.height / self.speed * 3 + 1
 
     @property
     def fire_duration(self):
-        return self.duration / 10
+        return self.duration / 15

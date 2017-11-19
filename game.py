@@ -68,8 +68,8 @@ class Game(object):
         for element in self.pre_ui:
             element.render(self.renderer)
 
-        for e in self.entities.values():
-            e.render(self.renderer)
+        for entity in self.entities.values():
+            entity.render(self.renderer)
 
         for element in self.ui:
             element.render(self.renderer)

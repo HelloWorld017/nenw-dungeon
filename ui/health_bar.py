@@ -16,7 +16,7 @@ class HealthBar(Element):
         self.real_width = self.width - self.skew_x
         self.sector_width = self.real_width / (self.player.max_health * (1 + self.ratio) - self.ratio)
 
-    def render(self, renderer):
+    def do_render(self, renderer):
         # Render borders
         for i in range(self.player.health):
             previous_width = self.sector_width * (1 + self.ratio) * i

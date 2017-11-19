@@ -11,6 +11,8 @@ class EntityThorn(EntityTrap):
 
     friction = 0
 
+    auto_decay = False
+
     def __init__(self, game, x, y, speed=20, inverse=False):
         self.width = game.width / 10
         self.speed = speed
@@ -29,6 +31,9 @@ class EntityThorn(EntityTrap):
 
     def update(self, events):
         super().update(events)
+
+        if self.auto_decay and (self.y < -self.height or self.y > self.game.height + self.height):
+            self.set_dead()
 
     def render(self, renderer):
         renderer.polygon(self.bound_model, self.color)

@@ -59,3 +59,6 @@ class BoundBox(Vector2):
     def polygon(self):
         return ((self.min.x, self.min.y), (self.min.x, self.max.y),
                 (self.max.x, self.max.y), (self.max.x, self.min.y))
+
+    def clone(self):
+        return BoundBox(self.min.clone(), self.max.clone())
