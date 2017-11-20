@@ -1,6 +1,5 @@
 from game import Game
 from player import Player
-from pattern.pattern_thorn import PatternThorn
 from ui.health_bar import HealthBar
 
 import pygame
@@ -12,9 +11,6 @@ player = Player(game)
 player.spawn()
 
 clock = pygame.time.Clock()
-
-pattern = PatternThorn(game, player)
-pattern.activate()
 
 HealthBar(game, 50, 50, player).show()
 

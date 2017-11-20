@@ -36,13 +36,13 @@ class Render(object):
 
     @chain
     def circle(self, vector, radius, color=WHITE, fill=True, width=1):
-        gfxdraw.aacircle(self.screen, vector.x, vector.y, radius, color)
+        gfxdraw.aacircle(self.screen, int(vector.x), int(vector.y), int(radius), color)
 
         if fill:
-            gfxdraw.filled_circle(self.screen, vector.x, vector.y, radius, color)
+            gfxdraw.filled_circle(self.screen, int(vector.x), int(vector.y), int(radius), color)
 
         if width != 1:
-            pygame.draw.circle(self.screen, color, vector.pos, radius, width)
+            pygame.draw.circle(self.screen, color, vector.pos, int(radius), width)
 
     @chain
     def line(self, pos1, pos2, color=WHITE):

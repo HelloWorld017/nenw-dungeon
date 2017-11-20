@@ -20,7 +20,7 @@ class Vector2(object):
     @chain
     def add(self, vector):
         self.x += vector.x
-        self.y -= vector.y
+        self.y += vector.y
 
     @chain
     def set_x(self, x):

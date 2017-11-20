@@ -3,6 +3,9 @@ import sys
 import pygame
 import pygame.locals as pg_vars
 
+from pattern.pattern_thorn import PatternThorn
+from pattern.pattern_circular import PatternCircular
+
 from keyboard.keys import Keys
 from render.render import Render
 
@@ -40,6 +43,14 @@ class Game(object):
         elif event.type is pg_vars.KEYDOWN:
             if event.key in self.key_maps:
                 self.key_maps[event.key] = True
+
+            if event.key == pg_vars.K_t:
+                pattern = PatternThorn(self, self.players[0])
+                pattern.activate()
+
+            elif event.key == pg_vars.K_c:
+                pattern = PatternCircular(self, self.players[0])
+                pattern.activate()
 
         elif event.type is pg_vars.KEYUP:
             if event.key in self.key_maps:
