@@ -1,15 +1,12 @@
+import pygame
+
 from game import Game
 from player import Player
-from ui.health_bar import HealthBar
-from ui.title import Title
-
-import pygame
+from ui.components.title import Title
 
 FPS = 60
 
 game = Game()
-player = Player(game)
-player.spawn()
 
 clock = pygame.time.Clock()
 
@@ -21,6 +18,7 @@ while True:
 
     if game.tick > 60 and not title.is_hidden:
         title.hide()
-        HealthBar(game, 50, 50, player).show()
+        player = Player(game)
+        player.spawn()
 
     clock.tick(FPS)

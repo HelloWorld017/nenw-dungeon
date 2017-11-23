@@ -1,11 +1,17 @@
+import math
+import pygame
+
+from decorators.alive import alive
+from decorators.chain import chain
 from entity.entity_living import EntityLiving
+from entity.entity_player_bullet import EntityPlayerBullet
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 import geometry.math as gmath
 from keyboard.keys import Keys
 import pygame.locals as pg_vars
-
-import math
+from ui.components.aim_indicator import AimIndicator
+from ui.components.health_bar import HealthBar
 
 
 class Player(EntityLiving):
@@ -17,6 +23,15 @@ class Player(EntityLiving):
     max_health = 5
     max_hurt_animate_tick = 30
 
+    # Firing
+    aim = 0
+    aim_auto = False
+    bullet_multiplier = 1.0
+    bullet_count = 1
+    bullet_color = (206, 147, 216)
+    fire_tick = 10
+    last_fire_tick = 0
+
     def __init__(self, game):
         super().__init__(game, BoundBox(
             Vector2(game.width / 2 - 25, game.height - 50),
@@ -24,10 +39,14 @@ class Player(EntityLiving):
         ))
 
         self.hurt_animate_tick = 0
+        self.point = 0
+        self.score = 0
 
     def spawn(self):
         super().spawn()
         self.game.players.append(self)
+        HealthBar(self.game, 50, 50, self).show()
+        AimIndicator(self.game, self).show()
 
     def set_dead(self):
         super().set_dead()
@@ -60,6 +79,14 @@ class Player(EntityLiving):
         self.motion.y += -50
         self.hurt_animate_tick = self.max_hurt_animate_tick
 
+    @alive
+    @chain
+    def teleport(self, x, y, rotation=None):
+        delta_x = x - self.x
+        self.aim += delta_x
+
+        super().teleport(x, y, rotation)
+
     def update(self, events):
         super().update(events)
         if self.game.key_maps[Keys.KEY_LEFT]:
@@ -69,6 +96,24 @@ class Player(EntityLiving):
         if self.game.key_maps[Keys.KEY_RIGHT]:
             self.rotate(0)
             self.move(15)
+
+        bullet_angle = 0
+
+        if self.game.key_maps[Keys.KEY_AIM_LEFT]:
+            self.aim = self.x - (1 / math.tan(math.pi / 3)) * self.y
+            bullet_angle = math.pi / 6
+
+        elif self.game.key_maps[Keys.KEY_AIM_RIGHT]:
+            self.aim = self.x + (1 / math.tan(math.pi / 3)) * self.y
+            bullet_angle = -math.pi / 6
+
+        else:
+            self.aim = self.x
+
+        if self.game.tick > self.last_fire_tick + self.fire_tick and pygame.key.get_mods() & Keys.KEY_FIRE:
+            self.last_fire_tick = self.game.tick
+            bullet = EntityPlayerBullet(self.game, self.x, self.y, self.bullet_color).spawn()
+            bullet.rotate(bullet_angle)
 
         for event in events:
             if event.type is pg_vars.KEYDOWN:

@@ -11,9 +11,17 @@ class Element(object):
         self.width = width
         self.height = height
         self.is_hidden = True
+        self.tick = 0
 
     def render(self, renderer):
+        if self.tick == 1:
+            self.init_render(renderer)
+
+        self.tick += 1
         self.do_render(renderer)
+
+    def init_render(self, renderer):
+        pass
 
     def do_render(self, renderer):
         pass

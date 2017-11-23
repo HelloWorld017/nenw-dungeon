@@ -51,9 +51,7 @@ class Entity(BoundBox):
 
     @chain
     def spawn(self):
-        self.entity_id = self.game.last_entity_id
-        self.game.last_entity_id += 1
-        self.game.entities[self.entity_id] = self
+        self.game.life_note.append(self)
 
     @chain
     def set_dead(self):

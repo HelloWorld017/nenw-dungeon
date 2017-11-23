@@ -2,7 +2,7 @@ from entity.monster.entity_thorn import EntityThorn
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
-from ui.warning.warning_square import WarningSquare
+from ui.components.warning.warning_square import WarningSquare
 
 
 class PatternThorn(Pattern):

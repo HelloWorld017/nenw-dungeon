@@ -55,6 +55,11 @@ class FadedElement(Element):
         self.fade_phase = "show"
 
     def render(self, renderer):
+        if self.tick == 1:
+            self.init_render(renderer)
+
+        self.tick += 1
+
         if self.fade_phase == "show":
             self.fade_tick += 1
 

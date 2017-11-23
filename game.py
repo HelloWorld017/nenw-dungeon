@@ -14,7 +14,9 @@ from render.render import Render
 class Game(object):
     entities = {}
     players = []
+    mobs = []
     death_note = []
+    life_note = []
     last_entity_id = 0
     key_maps = dict.fromkeys(Keys.list_keys(), False)
     width = 1280
@@ -76,8 +78,19 @@ class Game(object):
 
         for death in self.death_note:
             if death in self.entities:
+                death_entity = self.entities[death]
+
                 del self.entities[death]
 
+                if death_entity in self.mobs:
+                    self.mobs.remove(death_entity)
+
+        for life in self.life_note:
+            life.entity_id = self.last_entity_id
+            self.last_entity_id += 1
+            self.entities[life.entity_id] = life
+
+        self.life_note = []
         self.death_note = []
 
     def render(self):
@@ -97,3 +110,5 @@ class Game(object):
     def render_background(self):
         self.renderer.fill(self.background)
 
+    def show_skill_window(self):
+        SkillPage()
