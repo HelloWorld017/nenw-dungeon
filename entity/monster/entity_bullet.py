@@ -24,7 +24,8 @@ class EntityBullet(EntityTrap):
     @property
     def bound_model(self):
         return list(map(lambda theta: (self.x + math.cos((theta - 1 / 2) * math.pi / 3) * self.radius,
-                                  self.y + math.sin((theta - 1 / 2) * math.pi / 3) * self.radius), range(6)))
+                                       self.y + math.sin((theta - 1 / 2) * math.pi / 3) * self.radius), range(6)))
 
     def attack(self, target):
+        super().attack(target)
         target.hurt(1)

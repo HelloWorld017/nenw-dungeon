@@ -1,16 +1,16 @@
-from ui.element import Element
+from ui.faded_element import FadedElement
 import math
 
 
-class HealthBar(Element):
-    width = 200
-    height = 50
+class HealthBar(FadedElement):
     color = (0, 188, 212)
     skew = math.pi / 3
     ratio = 1 / 3
 
+    fade_use_transparent = False
+
     def __init__(self, game, x, y, player):
-        super().__init__(game, x, y)
+        super().__init__(game, x, y, 200, 50)
         self.player = player
         self.skew_x = 1 / math.tan(self.skew) * self.height
         self.real_width = self.width - self.skew_x
@@ -29,7 +29,7 @@ class HealthBar(Element):
                     (self.x + previous_width, self.y + self.height)
                 ),
 
-                color=self.color
+                color=self.blend_color(self.color)
             )
 
 

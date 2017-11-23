@@ -2,7 +2,7 @@ from entity.monster.entity_thorn import EntityThorn
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
-from ui.warning_square import WarningSquare
+from ui.warning.warning_square import WarningSquare
 
 
 class PatternThorn(Pattern):
@@ -15,6 +15,7 @@ class PatternThorn(Pattern):
     ui_list_phase_2 = []
 
     phase_1_trap_list = []
+    traps = []
 
     def on_pre_activate(self):
         super().on_pre_activate()
@@ -74,6 +75,8 @@ class PatternThorn(Pattern):
                 thorn.spawn()
                 thorn.auto_decay = auto_decay
 
+                self.traps.append(thorn)
+
                 if not inverse:
                     self.phase_1_trap_list.append(thorn)
 
@@ -90,10 +93,18 @@ class PatternThorn(Pattern):
         for elem in self.ui_list:
             elem.hide()
 
+        for trap in self.traps:
+            if not trap.is_dead:
+                trap.set_dead()
+
     @property
-    def duration(self):
+    def time(self):
         return self.game.height / self.speed * 3 + 1
 
     @property
+    def duration(self):
+        return self.game.height / self.speed * 5 + 1
+
+    @property
     def fire_duration(self):
-        return self.duration / 15
+        return self.time / 15

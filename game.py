@@ -5,6 +5,7 @@ import pygame.locals as pg_vars
 
 from pattern.pattern_thorn import PatternThorn
 from pattern.pattern_circular import PatternCircular
+from pattern.pattern_laser import PatternLaser
 
 from keyboard.keys import Keys
 from render.render import Render
@@ -18,6 +19,7 @@ class Game(object):
     key_maps = dict.fromkeys(Keys.list_keys(), False)
     width = 1280
     height = 720
+    background = (240, 240, 240)
     patterns = []
     pre_ui = []
     ui = []
@@ -31,7 +33,7 @@ class Game(object):
             pg_vars.DOUBLEBUF
         )
 
-        pygame.display.set_caption('Hello World!')
+        pygame.display.set_caption('orange:phobia')
 
         self.renderer = Render(screen)
 
@@ -52,6 +54,10 @@ class Game(object):
                 pattern = PatternCircular(self, self.players[0])
                 pattern.activate()
 
+            elif event.key == pg_vars.K_l:
+                pattern = PatternLaser(self, self.players[0])
+                pattern.activate()
+
         elif event.type is pg_vars.KEYUP:
             if event.key in self.key_maps:
                 self.key_maps[event.key] = False
@@ -69,7 +75,8 @@ class Game(object):
             pattern.update()
 
         for death in self.death_note:
-            self.entities.pop(death)
+            if death in self.entities:
+                del self.entities[death]
 
         self.death_note = []
 
@@ -88,5 +95,5 @@ class Game(object):
         self.renderer.update()
 
     def render_background(self):
-        self.renderer.fill((240, 240, 240))
+        self.renderer.fill(self.background)
 

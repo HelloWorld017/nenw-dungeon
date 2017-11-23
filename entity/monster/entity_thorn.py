@@ -54,6 +54,7 @@ class EntityThorn(EntityTrap):
         )
 
     def attack(self, target):
+        # Don't remove even if it was already activated
         if not self.activated:
             self.activated = True
             target.hurt(1)

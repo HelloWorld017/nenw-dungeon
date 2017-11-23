@@ -1,11 +1,12 @@
+import math
+import random
+
 from entity.monster.entity_bullet import EntityBullet
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
-from ui.warning_square import WarningSquare
-from ui.warning_circle import WarningCircle
-import math
-import random
+from ui.warning.warning_circle import WarningCircle
+from ui.warning.warning_square import WarningSquare
 
 
 class BulletManager:
@@ -40,13 +41,13 @@ class BulletManager:
 class PatternCircular(Pattern):
     bullet_count = 30
 
-    initial_bullet_time = 180
+    initial_bullet_time = 120
     initial_radius = 500
-    secondary_bullet_time = 30
-    third_bullet_time = 180
-    final_bullet_time = 30
+    secondary_bullet_time = 15
+    third_bullet_time = 120
+    final_bullet_time = 15
     over_bullet_time = 1
-    rest_time = 60
+    rest_time = 45
 
     phase = "init"
     ui = None
@@ -100,15 +101,26 @@ class PatternCircular(Pattern):
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
                         self.rest_time * 2) and self.phase == "second_attack_warn":
 
+            bullet_min = 0
+            bullet_max = self.game.width / 2
+
+            if self.entity.x > self.game.width / 2:
+                bullet_min = bullet_max
+                bullet_max = self.game.width
+
             for bullet in self.bullets:
-                bullet.calculate_target(Vector2(random.randint(0, self.game.width),
-                                                random.randint(0, self.game.height)), self.third_bullet_time, 0)
+                x = random.randint(bullet_min, bullet_max)
+
+                if random.randint(0, 10) >= 8:
+                    x = random.randint(self.game.width - bullet_max, self.game.width - bullet_min)
+
+                bullet.calculate_target(Vector2(x, random.randint(0, self.game.height)), self.third_bullet_time, 0)
 
             self.phase = "second_attack"
             self.ui.hide()
 
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
-                            self.third_bullet_time + self.rest_time * 2) and self.phase == "second_attack":
+                        self.third_bullet_time + self.rest_time * 2) and self.phase == "second_attack":
 
             self.phase = "third_attack_warn"
             self.ui = WarningCircle(self.game, self.entity, self.entity.width).show()
