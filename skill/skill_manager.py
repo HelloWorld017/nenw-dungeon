@@ -19,3 +19,4 @@ class SkillManager(object):
         for skill in group.skills:
             if skill.name not in self.skills:
                 self.skills[skill.name] = skill
+

@@ -8,6 +8,7 @@ import pygame
 class FadedElement(Element):
     max_fade_tick = 30
     fade_use_transparent = True
+    fade_use_left_top = False
     color_key = (0, 0, 255)
 
     def __init__(self, game, x, y, width, height):
@@ -55,7 +56,7 @@ class FadedElement(Element):
         self.fade_phase = "show"
 
     def render(self, renderer):
-        if self.tick == 1:
+        if self.tick == 0:
             self.init_render(renderer)
 
         self.tick += 1
@@ -86,7 +87,10 @@ class FadedElement(Element):
         self.do_render(use_renderer)
 
         if self.fade_use_transparent:
-            renderer.draw_image(self.surface, self.x, self.y)
+            if self.fade_use_left_top:
+                renderer.screen.blit(self.surface, (self.x, self.y))
+            else:
+                renderer.draw_image(self.surface, self.x, self.y)
 
     def blend_color(self, color):
         blend_rate = self.fade_tick / self.max_fade_tick

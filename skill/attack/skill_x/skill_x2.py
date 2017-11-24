@@ -1,5 +1,5 @@
 from decorators.singleton import singleton
-from skill.attack.skill_x import SkillX
+from skill.attack.skill_x.skill_x import SkillX
 
 
 @singleton

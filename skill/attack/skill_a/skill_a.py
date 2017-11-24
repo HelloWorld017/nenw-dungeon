@@ -1,7 +1,9 @@
+from decorators.singleton import singleton
 from skill.attack.skill_a.skill_group_a import SkillGroupA
 from skill.skill import Skill
 
 
+@singleton
 class SkillA(Skill):
     def __init__(self):
         super().__init__("A",

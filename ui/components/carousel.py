@@ -1,14 +1,19 @@
 from collections import deque
+
 from render.tween import Tween
 from ui.faded_element import FadedElement
+
+import pygame.locals as pg_vars
 
 
 class Carousel(FadedElement):
     DIRECTION_UP = -1
     DIRECTION_DOWN = 1
 
+    fade_use_left_top = True
     color_key = (240, 240, 240)
     gap = 50
+    ui_event = True
 
     def __init__(self, game, x, y, width, height, elements):
         super().__init__(game, x, y, width, height)
@@ -17,12 +22,12 @@ class Carousel(FadedElement):
             'opacity': 0
         }, ['y']), elements)))
 
-        for element in self.elements[0:3]:
-            element.set_value('opacity', 255, 30)
+        for element in (self.elements[0], self.elements[2]):
+            element.set_value('opacity', 128, 15)
+
+        self.elements[1].set_value('opacity', 255, 15)
 
         self.recalculate_positions(1)
-
-        self.height = elements[0].height
 
     def render(self, renderer):
         for elem in self.elements:
@@ -41,22 +46,28 @@ class Carousel(FadedElement):
             first = 2
             last = 0
 
-        self.elements[first].set_value('opacity', 0, 30)
-
-        def show_callback():
-            self.elements[last].set_value('opacity', 255, 30)
-
-        def callback():
-            deque(self.elements).rotate(direction)
-            self.recalculate_positions(30)
-            self.elements[last].set_callback(show_callback)
-
-        self.elements[first].set_callback(callback)
+        self.elements[first].set_value('opacity', 0, 15)
+        self.elements.rotate(direction)
+        self.recalculate_positions(15)
+        self.elements[first].set_value('opacity', 128, 15)
+        self.elements[1].set_value('opacity', 255, 15)
+        self.elements[last].set_value('opacity', 128, 15)
 
     def recalculate_positions(self, tick):
         for index, elem in enumerate(self.elements):
             elem.set_value('y', self.get_desired_y(index, elem), tick)
 
     def get_desired_y(self, index, elem):
-        return (self.height + self.gap) * (index - 1) + elem.height / 2
+        return self.y + (elem.element.height + self.gap) * (index - 1)
 
+    def update_event(self, ev):
+        if ev.type == pg_vars.KEYDOWN:
+            if ev.key == pg_vars.K_UP:
+                self.scroll(self.DIRECTION_UP)
+
+            elif ev.key == pg_vars.K_DOWN:
+                self.scroll(self.DIRECTION_DOWN)
+
+        for elem in self.elements:
+            if elem.element.ui_event:
+                elem.element.update_event(ev)

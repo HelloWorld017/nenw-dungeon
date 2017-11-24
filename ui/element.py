@@ -3,18 +3,19 @@ from decorators.chain import chain
 
 class Element(object):
     is_pre = False
+    ui_event = False
 
     def __init__(self, game, x, y, width, height):
         self.game = game
-        self.x = x
-        self.y = y
+        self.x = int(x)
+        self.y = int(y)
         self.width = width
         self.height = height
         self.is_hidden = True
         self.tick = 0
 
     def render(self, renderer):
-        if self.tick == 1:
+        if self.tick == 0:
             self.init_render(renderer)
 
         self.tick += 1
@@ -51,3 +52,6 @@ class Element(object):
 
         else:
             self.game.ui.append(self)
+
+    def update_event(self, ev):
+        pass

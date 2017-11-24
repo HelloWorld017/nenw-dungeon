@@ -9,6 +9,8 @@ from pattern.pattern_laser import PatternLaser
 
 from keyboard.keys import Keys
 from render.render import Render
+from skill.skill_loader import register_all_skills
+from ui.layouts.skill.skill_page import SkillPage
 
 
 class Game(object):
@@ -38,8 +40,13 @@ class Game(object):
         pygame.display.set_caption('orange:phobia')
 
         self.renderer = Render(screen)
+        register_all_skills()
 
     def handle_event(self, event):
+        for elem in self.ui:
+            if elem.ui_event:
+                elem.update_event(event)
+
         if event.type is pg_vars.QUIT:
             pygame.quit()
             sys.exit()
@@ -59,6 +66,9 @@ class Game(object):
             elif event.key == pg_vars.K_l:
                 pattern = PatternLaser(self, self.players[0])
                 pattern.activate()
+
+            elif event.key == pg_vars.K_s:
+                self.show_skill_window()
 
         elif event.type is pg_vars.KEYUP:
             if event.key in self.key_maps:
@@ -111,4 +121,5 @@ class Game(object):
         self.renderer.fill(self.background)
 
     def show_skill_window(self):
-        SkillPage()
+        ui = SkillPage(self)
+        ui.show()

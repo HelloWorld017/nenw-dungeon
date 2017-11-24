@@ -1,5 +1,5 @@
 from decorators.singleton import singleton
-from skill.attack.skill_d import SkillD
+from skill.attack.skill_d.skill_d import SkillD
 from skill.attack.skill_d.skill_d2 import SkillD2
 
 

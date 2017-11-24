@@ -1,7 +1,7 @@
 class Tween(object):
     def __init__(self, element, value, copying_values):
         self.value = value
-        self.motion = dict(map(lambda item: (item[0], 0), value.iteritems()))
+        self.motion = dict(map(lambda item: (item[0], 0), value.items()))
         self.target = self.value.copy()
         self.copying_values = copying_values
         self.element = element
@@ -10,7 +10,7 @@ class Tween(object):
 
     def update(self):
         for key, value in self.value.items():
-            if abs(self.target[key] - self.value[key]) < self.value[key]:
+            if abs(self.target[key] - self.value[key]) < abs(self.motion[key]):
                 self.value[key] = self.target[key]
                 self.motion[key] = 0
                 self.on_finish()
