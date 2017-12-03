@@ -5,7 +5,7 @@ from skill.skill import Skill
 class SkillD(Skill):
     def __init__(self, version, multiplier, require_score, previous):
         super().__init__("D%d" % version,
-                         "플레이어가 발사하는 투사체의 데미지가 %d배 증가합니다." % multiplier,
+                         "플레이어가 발사하는 투사체의 데미지가 %s배 증가합니다." % multiplier,
                          require_score,
                          SkillGroupD.get_instance(),
                          previous)

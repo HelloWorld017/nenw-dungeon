@@ -9,10 +9,9 @@ class SkillView(Element):
     width = 100
     height = 100
 
-    selected = False
-
-    def __init__(self, game, x, y, skill):
+    def __init__(self, game, x, y, skill, parent):
         super().__init__(game, x, y, 100, 100)
+        self.parent = parent
         self.skill = skill
         self.text_surface_background = None
         self.text_surface_foreground = None
@@ -22,6 +21,10 @@ class SkillView(Element):
 
         self.text_surface_background = renderer.get_text(self.skill.name, font_object, self.background_color)
         self.text_surface_foreground = renderer.get_text(self.skill.name, font_object, self.skill_color)
+
+    @property
+    def selected(self):
+        return self.parent.selected_skill == self.skill.name
 
     def do_render(self, renderer):
         renderer.polygon((

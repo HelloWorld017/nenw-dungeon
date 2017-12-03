@@ -32,6 +32,8 @@ class Player(EntityLiving):
     fire_tick = 10
     last_fire_tick = 0
 
+    evasion_percentage = 0
+
     def __init__(self, game):
         super().__init__(game, BoundBox(
             Vector2(game.width / 2 - 25, game.height - 50),

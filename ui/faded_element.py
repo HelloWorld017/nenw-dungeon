@@ -27,6 +27,13 @@ class FadedElement(Element):
         self.surface_renderer = Render(self.surface)
 
     @chain
+    def set_fade_tick(self, tick, status=None):
+        self.fade_tick = tick
+
+        if status is not None:
+            self.fade_phase = status
+
+    @chain
     def hide(self):
         if self.is_hidden:
             return
