@@ -8,9 +8,9 @@ from pattern.pattern_circular import PatternCircular
 from pattern.pattern_laser import PatternLaser
 
 from keyboard.keys import Keys
+from pattern.pattern_triangle import PatternTriangle
 from render.render import Render
 from skill.skill_loader import register_all_skills
-from ui.layouts.skill.skill_page import SkillPage
 
 
 class Game(object):
@@ -42,6 +42,8 @@ class Game(object):
         self.renderer = Render(screen)
         register_all_skills()
 
+        self.skill_ui = None
+
     def handle_event(self, event):
         for elem in self.ui:
             if elem.ui_event:
@@ -56,19 +58,19 @@ class Game(object):
                 self.key_maps[event.key] = True
 
             if event.key == pg_vars.K_t:
-                pattern = PatternThorn(self, self.players[0])
-                pattern.activate()
+                PatternThorn(self, self.players[0]).activate()
 
             elif event.key == pg_vars.K_c:
-                pattern = PatternCircular(self, self.players[0])
-                pattern.activate()
+                PatternCircular(self, self.players[0]).activate()
 
             elif event.key == pg_vars.K_l:
-                pattern = PatternLaser(self, self.players[0])
-                pattern.activate()
+                PatternLaser(self, self.players[0]).activate()
 
-            elif event.key == pg_vars.K_s:
-                self.show_skill_window()
+            elif event.key == pg_vars.K_1:
+                PatternTriangle(self, self.players[0]).activate()
+
+            elif event.key == Keys.KEY_SKILL_UI_TOGGLE:
+                self.toggle_skill_window()
 
         elif event.type is pg_vars.KEYUP:
             if event.key in self.key_maps:
@@ -120,6 +122,12 @@ class Game(object):
     def render_background(self):
         self.renderer.fill(self.background)
 
-    def show_skill_window(self):
-        ui = SkillPage(self)
-        ui.show()
+    def toggle_skill_window(self):
+        if self.skill_ui is None:
+            return
+
+        if self.skill_ui.is_hidden:
+            self.skill_ui.show()
+
+        else:
+            self.skill_ui.hide()

@@ -8,6 +8,7 @@ from ui.components.warning.warning_square import WarningSquare
 class PatternLaser(Pattern):
     time = 180
     free = 150
+    pre_activate_tick = 120
     lasers = []
     speed = None
     ui = None

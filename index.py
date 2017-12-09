@@ -3,6 +3,7 @@ import pygame
 from game import Game
 from player import Player
 from ui.components.title import Title
+from ui.layouts.skill.skill_page import SkillPage
 
 FPS = 60
 
@@ -20,5 +21,6 @@ while True:
         title.hide()
         player = Player(game)
         player.spawn()
+        game.skill_ui = SkillPage(game)
 
     clock.tick(FPS)

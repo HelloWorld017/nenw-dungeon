@@ -1,3 +1,5 @@
+import random
+
 from entity.monster.entity_trap import EntityTrap
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
@@ -29,9 +31,31 @@ class EntityLaser(EntityTrap):
                 self.on_fade_end()
 
     def render(self, renderer):
-        color = blend(self.fade / 30, self.game.background, self.color)
+        original_color = blend(self.fade / 30, self.game.background, self.color)
 
-        renderer.rect(self, color)
+        renderer.rect(self, blend(7 / 8, self.game.background, original_color))
+
+        x = self.x
+        y = 0
+
+        for j in range(2):
+            color = blend(1 / (j + 2), original_color, self.game.background)
+            radius = random.randint(5, 15)
+
+            for i in range(5):
+                next_x = random.randint(int(self.min.x + radius), int(self.max.x - radius))
+                if i == 4:
+                    next_x = self.x
+
+                renderer.polygon((
+                    (next_x - radius, y + self.height / 5),
+                    (next_x, y + self.height / 5),
+                    (x, y),
+                    (x - radius, y)
+                ), color=color)
+
+                x = next_x
+                y += self.height / 5
 
     @property
     def bound_model(self):

@@ -61,6 +61,8 @@ class SkillPage(FadedElement):
         empty_surface.fill((240, 240, 240))
         empty_surface.set_alpha(0)
 
+        self.empty_surface = empty_surface
+
         self.skill_desc = Tween(
             Image(
                 self.game,
@@ -70,14 +72,90 @@ class SkillPage(FadedElement):
             ),
             {'opacity': 255}, []
         )
+
+        self.skill_price = Tween(
+            Label(
+                self.game,
+                margin_left + carousel_width + 300,
+                margin_top + 150 + 150, 350, 80, "필요 SP   1", 32,
+                color=(52, 152, 219)
+            ).set_fade_tick(30, "pause"),
+            {'opacity': 255}, []
+        )
+
+        self.current_sp = Tween(
+            Label(
+                self.game,
+                margin_left + carousel_width + 300,
+                margin_top + 150 + 150 + 40, 350, 80, "현재 SP   0", 32,
+                color=(52, 152, 219)
+            ).set_fade_tick(30, "pause"),
+            {'opacity': 255}, []
+        )
+
+        self.skill_score = Tween(
+            Label(
+                self.game,
+                margin_left + carousel_width + 300 + 500 - 250,
+                margin_top + 150 + 150, 350, 80, "필요 점수   0", 32,
+                color=(52, 152, 219)
+            ).set_fade_tick(30, "pause"),
+            {'opacity': 255}, []
+        )
+
+        self.current_score = Tween(
+            Label(
+                self.game,
+                margin_left + carousel_width + 300 + 500 - 250,
+                margin_top + 150 + 150 + 40, 350, 80, "현재 점수   0", 32,
+                color=(52, 152, 219)
+            ).set_fade_tick(30, "pause"),
+            {'opacity': 255}, []
+        )
+
+        self.buy_button_image = Surface((500, 100))
+        Render(self.buy_button_image)\
+            .fill((52, 152, 219))\
+            .write_text(250, 50, "Enter 키로 구매", color=(240, 240, 240), size=50)
+
+        self.disabled_button_image = Surface((500, 100))
+        Render(self.disabled_button_image)\
+            .fill((220, 220, 220))\
+            .write_text(250, 50, "구매할 수 없음", color=(180, 180, 180), size=50)
+
+        self.already_bought_button_image = Surface((500, 100))
+        Render(self.already_bought_button_image)\
+            .fill((220, 220, 220))\
+            .write_text(250, 50, "이미 구매함", color=(180, 180, 180), size=50)
+
+        self.buy_button = Tween(
+            Image(
+                self.game,
+                margin_left + carousel_width + 300,
+                margin_top + 150 + 150 + 40 + 100,
+                self.buy_button_image
+            ),
+            {'opacity': 255}, []
+        )
+
+        self.skill_ui = [
+            self.skill_name,
+            self.skill_desc,
+            self.skill_price,
+            self.current_sp,
+            self.skill_score,
+            self.current_score,
+            self.buy_button
+        ]
+
         self.update_skill()
 
         self.elements.extend((
             self.carousel,
-            Label(self.game, margin_left, margin_top, 250, 50, "SkillTree", 50).set_fade_tick(30, "pause"),
-            self.skill_name,
-            self.skill_desc
+            Label(self.game, margin_left, margin_top, 250, 50, "SkillTree", 50).set_fade_tick(30, "pause")
         ))
+
+        self.elements.extend(self.skill_ui)
 
     def do_render(self, renderer):
         renderer.fill((239, 239, 239))
@@ -123,17 +201,50 @@ class SkillPage(FadedElement):
 
         self.in_tween = True
 
+        player = self.game.players[0]
+
         def callback():
-            self.skill_name.set_value('opacity', 255, 10)
-            self.skill_desc.set_value('opacity', 255, 10)
+            for skill_elem in self.skill_ui:
+                skill_elem.set_value('opacity', 255, 10)
 
             if self.current_activated_skill is not None:
                 skill_name = "<%s>" % self.current_activated_skill.name
                 skill_desc = self.current_activated_skill.description
+                if player.point < 1:
+                    self.current_sp.element.set_color((255, 87, 34))
+                else:
+                    self.current_sp.element.set_color((52, 152, 219))
+
+                self.current_sp.element.set_text("현재 SP   %d" % player.point)
+
+                if player.score < self.current_activated_skill.require_score:
+                    self.current_score.element.set_color((255, 87, 34))
+                else:
+                    self.current_score.element.set_color((52, 152, 219))
+
+                self.current_score.element.set_text("현재 점수   %d" % player.score)
+
+                self.skill_price.element.set_text('필요 SP   1')
+                self.skill_score.element.set_text('필요 점수   %d' % self.current_activated_skill.require_score)
+
+                if self.current_activated_skill.activated:
+                    self.buy_button.element.image = self.already_bought_button_image
+
+                elif self.current_activated_skill.can_activate(player):
+                    self.buy_button.element.image = self.buy_button_image
+
+                else:
+                    self.buy_button.element.image = self.disabled_button_image
 
             else:
                 skill_name = ''
                 skill_desc = ''
+                self.skill_price.element.set_text('')
+                self.skill_score.element.set_text('')
+                self.current_sp.element.set_text('')
+                self.current_score.element.set_text('')
+
+                self.buy_button.element.image = self.empty_surface
 
             self.skill_name.element.set_text(skill_name)
             self.skill_desc.element.image = Render.get_paragraph_text(
@@ -157,8 +268,8 @@ class SkillPage(FadedElement):
                 self.in_tween = False
 
         self.skill_name.set_callback(callback, True)
-        self.skill_name.set_value('opacity', 0, 10)
-        self.skill_desc.set_value('opacity', 0, 10)
+        for skill in self.skill_ui:
+            skill.set_value('opacity', 0, 10)
 
     @property
     def current_activated_skill(self):

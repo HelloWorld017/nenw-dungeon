@@ -6,7 +6,7 @@ class Skill(object):
         self.group = group
         self.previous = previous
 
-        self.activated = True
+        self.activated = False
 
         if all(skill.name != name for skill in self.group.skills):
             self.group.add_skill(self)

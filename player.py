@@ -9,7 +9,6 @@ from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 import geometry.math as gmath
 from keyboard.keys import Keys
-import pygame.locals as pg_vars
 from ui.components.aim_indicator import AimIndicator
 from ui.components.health_bar import HealthBar
 
@@ -117,10 +116,14 @@ class Player(EntityLiving):
             bullet = EntityPlayerBullet(self.game, self.x, self.y, self.bullet_color).spawn()
             bullet.rotate(bullet_angle)
 
+        if self.game.key_maps[Keys.KEY_JUMP]:
+            self.jump_start = 5
+        """
         for event in events:
             if event.type is pg_vars.KEYDOWN:
                 if event.key is Keys.KEY_JUMP:
                     self.do_jump()
+        """
 
         if self.jump_start > 0:
             self.jump_start -= 1
