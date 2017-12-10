@@ -15,6 +15,7 @@ class Entity(BoundBox):
         self.rot = 0
         self.motion = Vector2(0, 0)
         self.entity_id = None
+        self.entity_inner_tick = 0
 
     @alive
     @chain
@@ -43,6 +44,7 @@ class Entity(BoundBox):
 
     @alive
     def update(self, events):
+        self.entity_inner_tick += 1
         self.x += self.motion.x
         self.y += self.motion.y
 

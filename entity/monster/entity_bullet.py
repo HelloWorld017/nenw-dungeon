@@ -18,6 +18,11 @@ class EntityBullet(EntityTrap):
     def update(self, events):
         super().update(events)
 
+        if (not (-self.radius < self.x < self.game.width + self.radius)) or \
+                (not (-self.radius < self.y < self.game.height + self.radius)):
+
+            self.set_dead()
+
     def render(self, renderer):
         renderer.circle(self, self.radius, self.color)
 
