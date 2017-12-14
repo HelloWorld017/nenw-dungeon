@@ -1,26 +1,39 @@
 import math
 import pygame
+import pygame.image
+import pygame.locals as pg_vars
 
 from decorators.alive import alive
 from decorators.chain import chain
+from decorators.timeline import timeline
 from entity.entity_living import EntityLiving
 from entity.entity_player_bullet import EntityPlayerBullet
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 import geometry.math as gmath
 from keyboard.keys import Keys
+from render.blend import blend_image
 from ui.components.aim_indicator import AimIndicator
+from ui.components.blink_image import BlinkImage
 from ui.components.health_bar import HealthBar
 
 
+@timeline()
 class Player(EntityLiving):
     friction = 0.7
+    images = {}
+
+    # Jump
+    fly_mode = True
     air_jump = False
     jump_start = 0
     jump_count = 0
+
+    # Damage
     health = 5
     max_health = 5
-    max_hurt_animate_tick = 30
+    max_hurt_animate_tick = 60
+    max_invincible_time = 60
 
     # Firing
     aim = 0
@@ -31,6 +44,7 @@ class Player(EntityLiving):
     fire_tick = 10
     last_fire_tick = 0
 
+    # Evasion
     evasion_percentage = 0
 
     def __init__(self, game):
@@ -39,9 +53,15 @@ class Player(EntityLiving):
             Vector2(game.width / 2 + 25, game.height)
         ))
 
+        self.load_images()
         self.hurt_animate_tick = 0
         self.point = 0
         self.score = 0
+
+    # noinspection PyUnresolvedReferences
+    def load_images(self):
+        self.images['fly_enabled'] = blend_image(.5, pygame.image.load('./resources/fly_enabled.png'))
+        self.images['fly_disabled'] = blend_image(.5, pygame.image.load('./resources/fly_disabled.png'))
 
     def spawn(self):
         super().spawn()
@@ -75,10 +95,11 @@ class Player(EntityLiving):
         return self.max.y >= self.game.height
 
     def hurt(self, hurt_amount):
-        super().hurt(hurt_amount)
+        if not self.invincible_time > 0:
+            self.motion.y += -50
+            self.hurt_animate_tick = self.max_hurt_animate_tick
 
-        self.motion.y += -50
-        self.hurt_animate_tick = self.max_hurt_animate_tick
+        super().hurt(hurt_amount)
 
     @alive
     @chain
@@ -88,8 +109,24 @@ class Player(EntityLiving):
 
         super().teleport(x, y, rotation)
 
+    @chain
+    def set_flyable(self, flyable=True):
+        if flyable:
+            image = self.images['fly_enabled']
+
+        else:
+            image = self.images['fly_disabled']
+
+        blink_image = BlinkImage(self.game, self.game.width / 2, self.game.height / 2, image).show()
+
+        self.fly_mode = flyable
+        self.register_event(150, lambda: blink_image.hide())
+
     def update(self, events):
         super().update(events)
+
+        self.update_timeline()
+
         if self.game.key_maps[Keys.KEY_LEFT]:
             self.rotate(math.pi)
             self.move(15)
@@ -116,14 +153,15 @@ class Player(EntityLiving):
             bullet = EntityPlayerBullet(self.game, self.x, self.y, self.bullet_color).spawn()
             bullet.rotate(bullet_angle)
 
-        if self.game.key_maps[Keys.KEY_JUMP]:
-            self.jump_start = 5
-        """
-        for event in events:
-            if event.type is pg_vars.KEYDOWN:
-                if event.key is Keys.KEY_JUMP:
-                    self.do_jump()
-        """
+        if self.fly_mode:
+            if self.game.key_maps[Keys.KEY_JUMP]:
+                self.jump_start = 5
+
+        else:
+            for event in events:
+                if event.type is pg_vars.KEYDOWN:
+                    if event.key is Keys.KEY_JUMP:
+                        self.do_jump()
 
         if self.jump_start > 0:
             self.jump_start -= 1

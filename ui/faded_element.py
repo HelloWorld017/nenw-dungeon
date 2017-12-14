@@ -1,7 +1,7 @@
 from decorators.chain import chain
 from ui.element import Element
 from render.render import Render
-from render.blend_color import blend
+from render.blend import blend
 import pygame
 
 

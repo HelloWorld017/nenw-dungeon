@@ -35,6 +35,8 @@ class PatternThorn(Pattern):
                 Vector2((i * 2 + 1) * self.thorn_width, self.game.height)
             )).show())
 
+        self.entity.set_flyable(False)
+
     def on_activate(self):
         for elem in self.ui_list:
             elem.hide()
@@ -96,6 +98,8 @@ class PatternThorn(Pattern):
         for trap in self.traps:
             if not trap.is_dead:
                 trap.set_dead()
+
+        self.entity.set_flyable(True)
 
     @property
     def time(self):

@@ -48,7 +48,7 @@ class PatternCircular(Pattern):
     third_bullet_time = 120
     final_bullet_time = 15
     over_bullet_time = 1
-    rest_time = 45
+    rest_time = 32
 
     phase = "init"
     ui = None
@@ -60,8 +60,8 @@ class PatternCircular(Pattern):
         super().on_pre_activate()
         self.ui = WarningCircle(self.game, Vector2(self.game.width / 2, 0), self.initial_radius).show()
 
-        self.bullets = list(map(lambda i: BulletManager(EntityBullet(self.game, self.game.width / 2, 0).spawn()),
-                                range(self.bullet_count)))
+        self.bullets = list(map(lambda i: BulletManager(
+            EntityBullet(self.game, self.game.width / 2, 0, auto_vanish=False).spawn()), range(self.bullet_count)))
 
     def on_activate(self):
         super().on_activate()
@@ -86,49 +86,40 @@ class PatternCircular(Pattern):
             self.ui = WarningCircle(self.game, self.entity, self.entity.width).show()
             self.pos_save = self.entity.clone()
 
-        if self.tick > self.initial_bullet_time + self.rest_time and self.phase == "first_attack_warn":
+        if self.tick > self.initial_bullet_time + self.rest_time - 25 and self.phase == "first_attack_warn":
             self.phase = "first_attack"
             self.ui.hide()
             for bullet in self.bullets:
-                bullet.calculate_target(self.pos_save, self.secondary_bullet_time, self.over_bullet_time)
+                bullet.calculate_target(self.pos_save.clone().add(Vector2(
+                    random.randint(-50, 50), random.randint(-50, 50)
+                )), self.secondary_bullet_time, self.over_bullet_time)
 
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
-                        self.rest_time) and self.phase == "first_attack":
+                        self.rest_time - 25) and self.phase == "first_attack":
 
             self.phase = "second_attack_warn"
             self.ui = WarningSquare(self.game, BoundBox(Vector2(0, 0), Vector2(self.game.width, self.game.height)))\
                 .show()
 
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
-                        self.rest_time * 2) and self.phase == "second_attack_warn":
-
-            bullet_min = 0
-            bullet_max = self.game.width / 2
-
-            if self.entity.x > self.game.width / 2:
-                bullet_min = bullet_max
-                bullet_max = self.game.width
+                        self.rest_time * 2 - 25) and self.phase == "second_attack_warn":
 
             for bullet in self.bullets:
-                x = random.randint(bullet_min, bullet_max)
-
-                if random.randint(0, 10) >= 8:
-                    x = random.randint(self.game.width - bullet_max, self.game.width - bullet_min)
-
-                bullet.calculate_target(Vector2(x, random.randint(0, self.game.height)), self.third_bullet_time, 0)
+                bullet.calculate_target(Vector2(random.randint(0, self.game.width),
+                                                random.randint(0, self.game.height)), self.third_bullet_time, 0)
 
             self.phase = "second_attack"
             self.ui.hide()
 
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
-                        self.third_bullet_time + self.rest_time * 2) and self.phase == "second_attack":
+                        self.third_bullet_time + self.rest_time * 2 - 25) and self.phase == "second_attack":
 
             self.phase = "third_attack_warn"
             self.ui = WarningCircle(self.game, self.entity, self.entity.width).show()
             self.pos_save = self.entity.clone()
 
         if self.tick > (self.initial_bullet_time + self.secondary_bullet_time + self.over_bullet_time +
-                        self.third_bullet_time + self.rest_time * 3) and self.phase == "third_attack_warn":
+                        self.third_bullet_time + self.rest_time * 3 - 25) and self.phase == "third_attack_warn":
 
             self.phase = "third_attack"
             self.ui.hide()
@@ -143,4 +134,4 @@ class PatternCircular(Pattern):
     @property
     def duration(self):
         return self.initial_bullet_time + self.secondary_bullet_time + self.third_bullet_time + \
-               self.final_bullet_time + self.over_bullet_time * 2 + self.rest_time * 3
+               self.final_bullet_time + self.over_bullet_time * 2 + self.rest_time * 3 - 25

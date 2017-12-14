@@ -3,12 +3,14 @@ import sys
 import pygame
 import pygame.locals as pg_vars
 
+from pattern.pattern_rain import PatternRain
 from pattern.pattern_thorn import PatternThorn
 from pattern.pattern_circular import PatternCircular
 from pattern.pattern_laser import PatternLaser
 
 from keyboard.keys import Keys
 from pattern.pattern_triangle import PatternTriangle
+from pattern.pattern_turret import PatternTurret
 from render.render import Render
 from skill.skill_loader import register_all_skills
 
@@ -57,17 +59,23 @@ class Game(object):
             if event.key in self.key_maps:
                 self.key_maps[event.key] = True
 
-            if event.key == pg_vars.K_t:
+            if event.key == pg_vars.K_1:
                 PatternThorn(self, self.players[0]).activate()
 
-            elif event.key == pg_vars.K_c:
+            elif event.key == pg_vars.K_2:
                 PatternCircular(self, self.players[0]).activate()
 
-            elif event.key == pg_vars.K_l:
+            elif event.key == pg_vars.K_3:
                 PatternLaser(self, self.players[0]).activate()
 
-            elif event.key == pg_vars.K_1:
+            elif event.key == pg_vars.K_4:
                 PatternTriangle(self, self.players[0]).activate()
+
+            elif event.key == pg_vars.K_5:
+                PatternTurret(self, self.players[0]).activate()
+
+            elif event.key == pg_vars.K_6:
+                PatternRain(self, self.players[0]).activate()
 
             elif event.key == Keys.KEY_SKILL_UI_TOGGLE:
                 self.toggle_skill_window()

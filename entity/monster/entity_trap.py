@@ -17,4 +17,4 @@ class EntityTrap(Entity):
     @chain
     def attack(self, target):
         self.set_dead()
-        pass
+        target.hurt(1)

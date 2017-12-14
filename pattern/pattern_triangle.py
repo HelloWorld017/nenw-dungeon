@@ -41,11 +41,11 @@ class PatternTriangle(Pattern):
                 random_theta = random.randint(0, 5) / 10 * math.pi
 
                 newly_created_triangles.append(EntityTriangle(self.game, 0, random_theta,
-                                                              triangle).spawn(False))
+                                                              triangle).fade_spawn(False))
                 newly_created_triangles.append(EntityTriangle(self.game, 0, random_theta + math.pi * 2 / 3,
-                                                              triangle).spawn(False))
+                                                              triangle).fade_spawn(False))
                 newly_created_triangles.append(EntityTriangle(self.game, 0, random_theta + math.pi * 4 / 3,
-                                                              triangle).spawn(False))
+                                                              triangle).fade_spawn(False))
 
             self.created_triangles = newly_created_triangles
             self.triangles += newly_created_triangles
@@ -54,7 +54,7 @@ class PatternTriangle(Pattern):
 
         elif self.current_level_tick < self.level_tick:
             for triangle in self.created_triangles:
-                triangle.radius += 5
+                triangle.radius += 6
                 triangle.theta += math.pi / 90
                 triangle.update_position()
 

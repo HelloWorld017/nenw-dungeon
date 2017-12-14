@@ -1,3 +1,4 @@
+from decorators.alive import alive
 from decorators.chain import chain
 from entity.entity import Entity
 from geometry.bound_box import BoundBox
@@ -28,16 +29,21 @@ class EntityPlayerBullet(Entity):
 
     def get_angle_map(self):
         return (
-            (math.cos(-self.rot) * self.width, math.sin(-self.rot) * self.width),
-            (math.cos(-self.rot + math.pi / 2) * self.height, math.sin(-self.rot + math.pi / 2) * self.height),
-            (math.cos(-self.rot + math.pi) * self.width, math.sin(-self.rot + math.pi) * self.width),
-            (math.cos(-self.rot + math.pi * 3 / 2) * self.height, math.sin(-self.rot + math.pi * 3 / 2) * self.height)
+            (math.cos(-self.rot + math.pi / 2) * self.width, math.sin(-self.rot + math.pi / 2) * self.width),
+            (math.cos(-self.rot + math.pi) * self.height, math.sin(-self.rot + math.pi) * self.height),
+            (math.cos(-self.rot + math.pi * 3 / 2) * self.width, math.sin(-self.rot + math.pi * 3 / 2) * self.width),
+            (math.cos(-self.rot) * self.height, math.sin(-self.rot) * self.height)
         )
+
+    @alive
+    @chain
+    def rotate(self, rotation):
+        self.rot = (rotation + math.pi / 2) % (2 * math.pi)
+        self.angle_map = self.get_angle_map()
 
     def update(self, events):
         super().update(events)
-        self.x += math.cos(self.rot + math.pi / 2) * self.speed
-        self.y -= math.sin(self.rot + math.pi / 2) * self.speed
+        self.move_invert(self.speed)
 
         for target in self.game.mobs:
             if test_collision(target.bound_model, self.bound_model):

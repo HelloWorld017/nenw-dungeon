@@ -8,18 +8,21 @@ class EntityBullet(EntityTrap):
     radius = 10
     color = (176, 224, 230)
     friction = 0
+    bound_model_accuracy = 4
 
-    def __init__(self, game, x, y):
+    def __init__(self, game, x, y, auto_vanish=True):
         super().__init__(game, BoundBox(
             Vector2(x - self.radius / 2, y - self.radius / 2),
             Vector2(x + self.radius / 2, y + self.radius / 2)
         ))
 
+        self.auto_vanish = auto_vanish
+
     def update(self, events):
         super().update(events)
 
-        if (not (-self.radius < self.x < self.game.width + self.radius)) or \
-                (not (-self.radius < self.y < self.game.height + self.radius)):
+        if self.auto_vanish and ((not (-self.radius < self.x < self.game.width + self.radius)) or
+                                 (not (-self.radius < self.y < self.game.height + self.radius))):
 
             self.set_dead()
 
@@ -28,9 +31,7 @@ class EntityBullet(EntityTrap):
 
     @property
     def bound_model(self):
-        return list(map(lambda theta: (self.x + math.cos((theta - 1 / 2) * math.pi / 3) * self.radius,
-                                       self.y + math.sin((theta - 1 / 2) * math.pi / 3) * self.radius), range(6)))
-
-    def attack(self, target):
-        super().attack(target)
-        target.hurt(1)
+        return list(map(lambda theta: (
+            self.x + math.cos((theta - 1 / 2) * math.pi * 2 / self.bound_model_accuracy) * self.radius,
+            self.y + math.sin((theta - 1 / 2) * math.pi * 2 / self.bound_model_accuracy) * self.radius
+        ), range(self.bound_model_accuracy)))

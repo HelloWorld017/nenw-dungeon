@@ -7,6 +7,7 @@ from geometry.vector2 import Vector2
 
 class Entity(BoundBox):
     friction = 0.3
+    rot_difference = 0
     is_dead = False
 
     def __init__(self, game, bound_box):
@@ -34,8 +35,15 @@ class Entity(BoundBox):
     @chain
     def move(self, amount):
         self.teleport(
-            self.x + math.cos(self.rot) * amount,
-            self.y + math.sin(self.rot) * amount
+            self.x + math.cos(self.rot + self.rot_difference) * amount,
+            self.y + math.sin(self.rot + self.rot_difference) * amount
+        )
+
+    @chain
+    def move_invert(self, amount):
+        self.teleport(
+            self.x + math.cos(self.rot + self.rot_difference) * amount,
+            self.y - math.sin(self.rot + self.rot_difference) * amount
         )
 
     @chain
