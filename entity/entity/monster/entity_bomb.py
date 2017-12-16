@@ -1,10 +1,11 @@
 import math
 
-from entity.entity_fadeable import EntityFadeable
-from entity.monster.entity_energy import EntityEnergy
-from entity.monster.entity_trap import EntityTrap
-from geometry.bound_box import BoundBox
+from entity.entity_trap import EntityTrap
+
 import geometry.math as gmath
+from entity.entity.monster.entity_energy import EntityEnergy
+from entity.entity_fadeable import EntityFadeable
+from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 
 

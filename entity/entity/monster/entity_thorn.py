@@ -1,4 +1,4 @@
-from entity.monster.entity_trap import EntityTrap
+from entity.entity_trap import EntityTrap
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 

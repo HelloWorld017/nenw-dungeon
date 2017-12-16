@@ -1,9 +1,10 @@
 import math
 
-from entity.monster.entity_bullet import EntityBullet
-from entity.monster.entity_trap import EntityTrap
-from geometry.bound_box import BoundBox
+from entity.entity_trap import EntityTrap
+
 import geometry.math as gmath
+from entity.entity.monster.entity_bullet import EntityBullet
+from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 
 

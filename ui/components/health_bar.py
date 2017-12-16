@@ -10,7 +10,7 @@ class HealthBar(FadedElement):
     fade_use_transparent = False
 
     def __init__(self, game, x, y, player):
-        super().__init__(game, x, y, 200, 50)
+        super().__init__(game, x, y, 400, 50)
         self.player = player
         self.skew_x = 1 / math.tan(self.skew) * self.height
         self.real_width = self.width - self.skew_x
@@ -31,6 +31,4 @@ class HealthBar(FadedElement):
 
                 color=self.blend_color(self.color)
             )
-
-
 

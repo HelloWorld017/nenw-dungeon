@@ -1,7 +1,7 @@
 import math
 import random
 
-from entity.monster.entity_triangle import EntityTriangle
+from entity.entity.monster.entity_triangle import EntityTriangle
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
 

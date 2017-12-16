@@ -1,6 +1,6 @@
 from decorators.alive import alive
 from decorators.chain import chain
-from entity.entity import Entity
+from entity.entity_base import Entity
 from render.blend import blend
 
 

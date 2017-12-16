@@ -1,4 +1,4 @@
-from entity.monster.entity_laser import EntityLaser
+from entity.entity.monster.entity_laser import EntityLaser
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern

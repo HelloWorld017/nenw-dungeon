@@ -1,20 +1,14 @@
+import math
 import random
 
-import math
-
-from entity.monster.entity_bomb import EntityBomb
+from entity.entity.monster.entity_bomb import EntityBomb
 from pattern.pattern import Pattern
 
 
 class PatternRain(Pattern):
     intended_duration = 600
     fire_tick = 45
-
-    def on_pre_activate(self):
-        self.entity.set_flyable(False)
-
-    def on_deactivate(self):
-        self.entity.set_flyable(True)
+    activate_fly_mode = False
 
     def do_update(self):
         super().do_update()

@@ -3,6 +3,7 @@ from decorators.chain import chain
 
 class Pattern(object):
     pre_activate_tick = 60
+    activate_fly_mode = True
 
     def __init__(self, game, entity):
         self.game = game
@@ -43,6 +44,12 @@ class Pattern(object):
     def activate(self):
         self.tick = 0
         self.game.patterns.append(self)
+        if self.activate_fly_mode and (not self.entity.fly_mode):
+            self.entity.set_flyable(True)
+
+        elif (not self.activate_fly_mode) and self.entity.fly_mode:
+            self.entity.set_flyable(False)
+
         self.on_pre_activate()
 
     @chain

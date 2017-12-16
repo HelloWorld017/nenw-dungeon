@@ -1,16 +1,17 @@
 import math
+
 import pygame
 import pygame.image
 import pygame.locals as pg_vars
 
+import geometry.math as gmath
 from decorators.alive import alive
 from decorators.chain import chain
 from decorators.timeline import timeline
+from entity.entity.entity_player_bullet import EntityPlayerBullet
 from entity.entity_living import EntityLiving
-from entity.entity_player_bullet import EntityPlayerBullet
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
-import geometry.math as gmath
 from keyboard.keys import Keys
 from render.blend import blend_image
 from ui.components.aim_indicator import AimIndicator
@@ -31,7 +32,7 @@ class Player(EntityLiving):
 
     # Damage
     health = 5
-    max_health = 5
+    max_health = 10
     max_hurt_animate_tick = 60
     max_invincible_time = 60
 

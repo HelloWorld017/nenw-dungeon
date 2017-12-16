@@ -1,6 +1,6 @@
 import math
 
-from entity.monster.entity_turret import EntityTurret
+from entity.entity.monster.entity_turret import EntityTurret
 from pattern.pattern import Pattern
 
 

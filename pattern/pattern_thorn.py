@@ -1,4 +1,4 @@
-from entity.monster.entity_thorn import EntityThorn
+from entity.entity.monster.entity_thorn import EntityThorn
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
@@ -17,6 +17,8 @@ class PatternThorn(Pattern):
     phase_1_trap_list = []
     traps = []
 
+    activate_fly_mode = False
+
     def on_pre_activate(self):
         super().on_pre_activate()
         self.last_fire = 0
@@ -34,8 +36,6 @@ class PatternThorn(Pattern):
                 Vector2((i * 2) * self.thorn_width, 0),
                 Vector2((i * 2 + 1) * self.thorn_width, self.game.height)
             )).show())
-
-        self.entity.set_flyable(False)
 
     def on_activate(self):
         for elem in self.ui_list:
@@ -98,8 +98,6 @@ class PatternThorn(Pattern):
         for trap in self.traps:
             if not trap.is_dead:
                 trap.set_dead()
-
-        self.entity.set_flyable(True)
 
     @property
     def time(self):

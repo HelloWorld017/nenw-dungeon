@@ -1,5 +1,5 @@
-from entity.entity_player_bullet import EntityPlayerBullet
-from entity.monster.entity_trap import EntityTrap
+from entity.entity.entity_player_bullet import EntityPlayerBullet
+from entity.entity_trap import EntityTrap
 
 
 class EntityIce(EntityPlayerBullet, EntityTrap):

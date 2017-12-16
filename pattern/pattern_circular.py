@@ -1,8 +1,7 @@
 import math
 import random
 
-
-from entity.monster.entity_bullet import EntityBullet
+from entity.entity.monster.entity_bullet import EntityBullet
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern

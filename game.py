@@ -3,6 +3,7 @@ import sys
 import pygame
 import pygame.locals as pg_vars
 
+from pattern.pattern_fakey import PatternFakey
 from pattern.pattern_rain import PatternRain
 from pattern.pattern_thorn import PatternThorn
 from pattern.pattern_circular import PatternCircular
@@ -76,6 +77,9 @@ class Game(object):
 
             elif event.key == pg_vars.K_6:
                 PatternRain(self, self.players[0]).activate()
+
+            elif event.key == pg_vars.K_7:
+                PatternFakey(self, self.players[0]).activate()
 
             elif event.key == Keys.KEY_SKILL_UI_TOGGLE:
                 self.toggle_skill_window()

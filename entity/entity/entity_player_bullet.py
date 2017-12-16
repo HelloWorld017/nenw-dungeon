@@ -1,6 +1,6 @@
 from decorators.alive import alive
 from decorators.chain import chain
-from entity.entity import Entity
+from entity.entity_base import Entity
 from geometry.bound_box import BoundBox
 from geometry.collision import test_collision
 from geometry.vector2 import Vector2
