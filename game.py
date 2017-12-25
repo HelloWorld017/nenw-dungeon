@@ -1,8 +1,11 @@
+import random
 import sys
 
 import pygame
 import pygame.locals as pg_vars
 
+from decorators.delay import delay
+from pattern.pattern_drop import PatternDrop
 from pattern.pattern_fakey import PatternFakey
 from pattern.pattern_rain import PatternRain
 from pattern.pattern_thorn import PatternThorn
@@ -27,7 +30,17 @@ class Game(object):
     width = 1280
     height = 720
     background = (240, 240, 240)
+    passed_patterns = 0
     patterns = []
+    avail_patterns_easy = [
+        PatternThorn, PatternLaser, PatternRain
+    ]
+    avail_patterns_normal = [
+        PatternCircular, PatternDrop, PatternFakey
+    ]
+    avail_patterns_hard = [
+        PatternTurret, PatternTriangle
+    ]
     pre_ui = []
     ui = []
 
@@ -60,29 +73,9 @@ class Game(object):
             if event.key in self.key_maps:
                 self.key_maps[event.key] = True
 
-            if event.key == pg_vars.K_1:
-                PatternThorn(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_2:
-                PatternCircular(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_3:
-                PatternLaser(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_4:
-                PatternTriangle(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_5:
-                PatternTurret(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_6:
-                PatternRain(self, self.players[0]).activate()
-
-            elif event.key == pg_vars.K_7:
-                PatternFakey(self, self.players[0]).activate()
-
             elif event.key == Keys.KEY_SKILL_UI_TOGGLE:
-                self.toggle_skill_window()
+                # self.toggle_skill_window()
+                pass
 
         elif event.type is pg_vars.KEYUP:
             if event.key in self.key_maps:
@@ -143,3 +136,37 @@ class Game(object):
 
         else:
             self.skill_ui.hide()
+
+    def new_pattern(self, end=True):
+        if len(self.players) < 1:
+            return
+
+        if end:
+            self.players[0].score += 100
+            self.passed_patterns += 1
+
+        @delay(1)
+        def start_pattern():
+            if len(self.players) < 1:
+                return
+
+            if self.passed_patterns < 4:
+                chosen_pattern = random.choice(self.avail_patterns_easy)
+
+            elif self.passed_patterns < 10:
+                if random.randint(0, 10) >= 3:
+                    chosen_pattern = random.choice(self.avail_patterns_normal)
+
+                else:
+                    chosen_pattern = random.choice(self.avail_patterns_easy)
+
+            else:
+                if random.randint(0, 10) >= 3:
+                    chosen_pattern = random.choice(self.avail_patterns_hard)
+
+                else:
+                    chosen_pattern = random.choice(self.avail_patterns_normal)
+
+            chosen_pattern(self, self.players[0]).activate()
+
+        start_pattern()

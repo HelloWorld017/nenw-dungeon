@@ -40,8 +40,8 @@ class EntityFadeable(Entity):
     def set_dead(self):
         self.fade_set_dead()
 
-    @alive
     @chain
+    @alive
     def fade_set_dead(self, animate=True):
         if self.is_dead_anim_in_progress:
             return

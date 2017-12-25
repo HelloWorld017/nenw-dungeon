@@ -7,12 +7,13 @@ class Title(FadedElement):
 
     # noinspection PyUnresolvedReferences
     def __init__(self, game):
-        self.image = pygame.image.load('./resources/orangephobia.png')
+        super().__init__(game, game.width / 2, game.height / 2, game.width, game.height)
 
-        super().__init__(game, game.width / 2, game.height / 3,
-                         self.image.get_rect().width, self.image.get_rect().height)
+        self.image = pygame.image.load('./resources/orangephobia.png')
+        self.explanation = pygame.image.load('./resources/explanation.png')
 
     def do_render(self, renderer):
         super().do_render(renderer)
 
-        renderer.draw_image(self.image, self.width / 2, self.height / 2)
+        renderer.draw_image(self.explanation, self.width / 2, self.height / 2)
+        renderer.draw_image(self.image, self.width / 2, self.height / 3)

@@ -125,8 +125,9 @@ class Player(EntityLiving):
 
     def update(self, events):
         super().update(events)
-
         self.update_timeline()
+        
+        self.score += 1
 
         if self.game.key_maps[Keys.KEY_LEFT]:
             self.rotate(math.pi)

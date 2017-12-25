@@ -6,7 +6,7 @@ from render.blend import blend
 
 
 class EntityHealthPack(Entity):
-    color = (66, 66, 66)
+    color = (190, 190, 190)
     color_front = (239, 108, 0)
     friction = 0
     fade_tick = 0

@@ -5,7 +5,7 @@ from render.blend import blend
 
 
 class EntityMimic(EntityTrap):
-    color = (66, 66, 66)
+    color = (190, 190, 190)
     color_front = (239, 108, 0)
     color_mimic = (245, 124, 0)
     friction = 0

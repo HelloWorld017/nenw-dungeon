@@ -56,3 +56,4 @@ class Pattern(object):
     def deactivate(self):
         self.on_deactivate()
         self.game.patterns.remove(self)
+        self.game.new_pattern()

@@ -55,7 +55,7 @@ class PatternTriangle(Pattern):
         elif self.current_level_tick < self.level_tick:
             for triangle in self.created_triangles:
                 triangle.radius += 6
-                triangle.theta += math.pi / 90
+                triangle.theta += math.pi / 180
                 triangle.update_position()
 
         self.current_level_tick += 1
