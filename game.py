@@ -33,10 +33,10 @@ class Game(object):
     passed_patterns = 0
     patterns = []
     avail_patterns_easy = [
-        PatternThorn, PatternLaser, PatternRain
+        PatternThorn, PatternRain, PatternFakey
     ]
     avail_patterns_normal = [
-        PatternCircular, PatternDrop, PatternFakey
+        PatternCircular, PatternDrop, PatternLaser
     ]
     avail_patterns_hard = [
         PatternTurret, PatternTriangle
@@ -151,19 +151,26 @@ class Game(object):
                 return
 
             if self.passed_patterns < 4:
-                chosen_pattern = random.choice(self.avail_patterns_easy)
+                if random.randint(0, 10) >= 4:
+                    chosen_pattern = random.choice(self.avail_patterns_easy)
 
-            elif self.passed_patterns < 10:
-                if random.randint(0, 10) >= 3:
+                else:
+                    chosen_pattern = random.choice(self.avail_patterns_normal)
+
+            elif self.passed_patterns < 7:
+                if random.randint(0, 10) >= 4:
                     chosen_pattern = random.choice(self.avail_patterns_normal)
 
                 else:
                     chosen_pattern = random.choice(self.avail_patterns_easy)
 
             else:
-                if random.randint(0, 10) >= 3:
+                if random.randint(0, 10) >= 4:
                     chosen_pattern = random.choice(self.avail_patterns_hard)
 
+                elif random.randint(0, 10) >= 8:
+                    chosen_pattern = random.choice(self.avail_patterns_easy)
+                    
                 else:
                     chosen_pattern = random.choice(self.avail_patterns_normal)
 

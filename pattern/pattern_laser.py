@@ -1,4 +1,5 @@
 from entity.entity.monster.entity_laser import EntityLaser
+from entity.entity.monster.entity_laser_bottom import EntityLaserBottom
 from geometry.bound_box import BoundBox
 from geometry.vector2 import Vector2
 from pattern.pattern import Pattern
@@ -12,6 +13,9 @@ class PatternLaser(Pattern):
     lasers = []
     speed = None
     ui = None
+    warning_mid = None
+    laser_mid = None
+    laser_phase = 0
 
     def on_pre_activate(self):
         super().on_pre_activate()
@@ -36,7 +40,7 @@ class PatternLaser(Pattern):
                 Vector2(5 + player_width + self.free + laser_width, self.game.height)
             )).show()
         ]
-
+        
     def on_activate(self):
         super().on_activate()
 
@@ -49,6 +53,39 @@ class PatternLaser(Pattern):
 
     def do_update(self):
         super().do_update()
+        
+        if self.tick > (self.duration / 2) - 50 and self.laser_phase == 0:
+            self.laser_phase = 1
+            self.warning_mid = [
+                WarningSquare(self.game, BoundBox(
+                    Vector2(0, self.game.height - 100),
+                    Vector2(self.game.width, self.game.height)
+                )).show(),
+                
+                WarningSquare(self.game, BoundBox(
+                    Vector2(0, 0),
+                    Vector2(self.game.width, 100)
+                )).show()
+            ]
+        
+        elif self.tick > (self.duration / 2) and self.laser_phase == 1:
+            self.laser_phase = 2
+            for warning in self.warning_mid:
+                warning.hide()
+            
+            self.warning_mid = None
+            self.laser_mid = [
+                EntityLaserBottom(self.game, self.game.height - 100).spawn(),
+                EntityLaserBottom(self.game, 0).spawn()
+            ]
+        
+        elif self.tick > (self.duration / 2) + 50 and self.laser_phase == 2:
+            self.laser_phase = 3
+            for laser in self.laser_mid:
+                laser.set_dead()
+            
+            self.laser_mid = None
+        
 
     def on_deactivate(self):
         super().on_deactivate()
